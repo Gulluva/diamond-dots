@@ -18,8 +18,10 @@ export default function Number({ value, onToggle }) {
 
   const handleClick = () => {
     const newActiveState = !isActive;
-    setIsActive(newActiveState);
-    onToggle(value, newActiveState);
+      if (onToggle(value, newActiveState)){
+          setIsActive(newActiveState);
+      }
+
   };
 
   return (

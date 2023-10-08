@@ -45,6 +45,7 @@ export function Canvas(props) {
   }
 
   useEffect(() => {
+    console.log({props});
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     context.canvas.width = 500;
@@ -75,7 +76,8 @@ export function Canvas(props) {
 
   const handleButtonToggle = (number, isActive) => {
     if (number > freedots.length && isActive) {
-      return;
+      console.log({number, freedots})
+      return false;
     }
   
     if (isActive) {
@@ -112,6 +114,7 @@ export function Canvas(props) {
       }
 
     }
+    return true;
   };
 
   return (

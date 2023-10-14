@@ -1,23 +1,33 @@
 import { useRef, useEffect, useState } from 'react';
 import Controls from './Controls';
+import { useApp } from '../contexts/AppContext';
 
-export function Canvas(props) {
-  const canvasRef = useRef(null);
+
+export function Canvas() {
+  const {
+    numDots, setNumDots,
+    puzzleDigits, setPuzzleDigits,
+    staticDigits, setStaticDigits,
+    colorMap, positionBase, digString2Dots, generateRandomString    
+    } = useApp();
+
+   const canvasRef = useRef(null);
   const [activeNumbers, setActiveNumbers] = useState([]);
-  const [freedots, setFreedots] = useState([0,1,2,3,4,5,6,7,8]);
-  const [dotArrayRedraw, setDotArrayRedraw] = useState(props.dotarray);
-  const colorMap = {
-    1: 'white',
-    2: 'red',
-    3: 'green',
-    4: 'yellow',
-    5: 'blue',
-    6: 'orange',
-    7: 'purple',
-    8: 'pink',
-    9: 'brown'
-    // ... Add colors for other numbers
-  };
+  const [freedots, setFreedots] = useState(generateConsecutiveArray(numDots));
+  const [dotArrayRedraw, setDotArrayRedraw] = useState(digString2Dots(puzzleDigits, positionBase[numDots], 25, colorMap));
+
+ // Is this possible to solve? 3342444312  Or should there be a button to say it's impossible?
+
+  function generateConsecutiveArray(num) {
+    let array = [];
+
+    for (let i = 0; i < num; i++) {
+      array.push(i);
+    }
+
+    return array;
+
+  }
 
   function drawDotArray(dotArr) {
     const canvas = canvasRef.current;
@@ -45,7 +55,7 @@ export function Canvas(props) {
   }
 
   useEffect(() => {
-    console.log({props});
+
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     context.canvas.width = 500;
@@ -61,10 +71,10 @@ export function Canvas(props) {
     let radius = 30; // Arc radius
     let startAngle = 0; // Starting point on circle
     let endAngle = Math.PI * 2; // End point on circle
-    for (let i = props.dotarray.length-1; i >= 0 ; i--) {
+    for (let i = dotArrayRedraw.length-1; i >= 0 ; i--) {
       context.beginPath();
-      context.fillStyle = props.dotarray[i].colour;
-      context.arc(props.dotarray[i].x, props.dotarray[i].y, radius, startAngle, endAngle);
+      context.fillStyle = dotArrayRedraw[i].colour;
+      context.arc(dotArrayRedraw[i].x, dotArrayRedraw[i].y, radius, startAngle, endAngle);
       context.fill();
         context.closePath();
     }
@@ -119,7 +129,7 @@ export function Canvas(props) {
 
   return (
   <>
-    <canvas ref={canvasRef} dotarray={props.dotarray} />
+    <canvas ref={canvasRef} />
     <Controls onButtonToggle={handleButtonToggle} />
     </>
 

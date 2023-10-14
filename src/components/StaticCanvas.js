@@ -1,8 +1,18 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
+import { useApp } from '../contexts/AppContext';
 
-export default function StaticCanvas(props) {
+export default function StaticCanvas() {
 
     const canvasRef = useRef(null);
+
+    const {
+      numDots, setNumDots,
+      puzzleDigits, setPuzzleDigits,
+      staticDigits, setStaticDigits,
+      colorMap, positionBase, digString2Dots, generateRandomString    
+      } = useApp();
+
+      const dotarray = digString2Dots(staticDigits, positionBase[numDots], 20, colorMap)
   
     useEffect(() => {
       const canvas = canvasRef.current;
@@ -20,17 +30,17 @@ export default function StaticCanvas(props) {
       let radius = 24; // Arc radius
       let startAngle = 0; // Starting point on circle
       let endAngle = Math.PI * 2; // End point on circle
-      for (let i = props.dotarray.length-1; i >= 0 ; i--) {
+      for (let i = dotarray.length-1; i >= 0 ; i--) {
         context.beginPath();
-        context.fillStyle = props.dotarray[i].colour;
-        context.arc(props.dotarray[i].x, props.dotarray[i].y, radius, startAngle, endAngle);
+        context.fillStyle = dotarray[i].colour;
+        context.arc(dotarray[i].x, dotarray[i].y, radius, startAngle, endAngle);
         context.fill();
           context.closePath();
       }
     }, []);
 
     return (
-      <canvas ref={canvasRef} dotarray={props.dotarray} />
+      <canvas ref={canvasRef} />
     )
 
 
